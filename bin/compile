@@ -101,12 +101,6 @@ export CPATH="$INCLUDE_PATH"
 export CPPPATH="$INCLUDE_PATH"
 
 ############################################
-# install fibers
-############################################
-echo "-----> Installing fibers with npm"
-run_npm "install fibers -g"
-
-############################################
 # install meteorite
 ############################################
 echo "-----> Installing meteorite with npm"
@@ -154,3 +148,9 @@ PATH="$METEOR_BUILD_DIR/bin:$PATH"
 echo "-----> Vendoring node into slug"
 mkdir -p "$METEOR_BUILD_DIR/bin"
 cp "$VENDORED_NODE/bin/node" "$METEOR_BUILD_DIR/bin/node"
+
+############################################
+# Run npm install
+############################################
+cd "$METEOR_BUILD_DIR"/app/programs/server
+run_npm "install"
