@@ -159,4 +159,4 @@ echo "-----"
 ls
 
 echo "-----> Run npm install"
-run_npm "install"
+npm install
