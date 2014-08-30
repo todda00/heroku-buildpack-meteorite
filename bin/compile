@@ -154,7 +154,9 @@ cp "$VENDORED_NODE/bin/node" "$METEOR_BUILD_DIR/bin/node"
 ############################################
 echo "-----> Move to app directory: /programs/server"
 cd "$METEOR_BUILD_DIR"/app/programs/server
-echo `pwd`
+pwd
+echo "-----"
+ls
 
 echo "-----> Run npm install"
 run_npm "install"
