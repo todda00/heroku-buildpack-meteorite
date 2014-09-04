@@ -122,6 +122,19 @@ VENDORED_METEOR="$(mktmpdir meteor)"
 curl https://install.meteor.com | HOME="$VENDORED_METEOR" /bin/sh | indent
 echo "Meteor installed" | indent
 
+############################################
+# Run npm install before running meteorité as some packages requires fibers to be installed
+############################################
+echo "-----> Move to app directory: /programs/server"
+cd "$METEOR_BUILD_DIR"/app/programs/server
+pwd
+echo "-----"
+ls
+
+echo "-----> Run npm install"
+npm install
+
+
 echo "Installing packages" | indent
 HOME="$BUILD_DIR" mrt install --force | indent
 echo "Building meteor bundle" | indent
@@ -148,15 +161,3 @@ PATH="$METEOR_BUILD_DIR/bin:$PATH"
 echo "-----> Vendoring node into slug"
 mkdir -p "$METEOR_BUILD_DIR/bin"
 cp "$VENDORED_NODE/bin/node" "$METEOR_BUILD_DIR/bin/node"
-
-############################################
-# Run npm install
-############################################
-echo "-----> Move to app directory: /programs/server"
-cd "$METEOR_BUILD_DIR"/app/programs/server
-pwd
-echo "-----"
-ls
-
-echo "-----> Run npm install"
-npm install
