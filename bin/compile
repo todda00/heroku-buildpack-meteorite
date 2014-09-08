@@ -150,7 +150,8 @@ mkdir -p "$METEOR_BUILD_DIR/bin"
 cp "$VENDORED_NODE/bin/node" "$METEOR_BUILD_DIR/bin/node"
 
 ############################################
-# Run npm install before running meteorité as some packages requires fibers to be installed
+# Run npm install beforein order to ensure fibers and others npm packages used by meteor are installed
+# as stated in meteor docs: http://docs.meteor.com/#deploying
 ############################################
 echo "-----> Move to app directory: /programs/server"
 cd "$METEOR_BUILD_DIR"/app/programs/server
