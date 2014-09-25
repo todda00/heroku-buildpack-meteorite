@@ -143,7 +143,7 @@ cat > "$BUILD_DIR"/.profile.d/mongo.sh <<EOF
   export MONGO_URL=\${MONGO_URL:-\$MONGOHQ_URL};
 EOF
 
-if [ -z "$STATE" ]; then
+if [ -z "$MAILGUN_API_KEY" ]; then
   echo "MAILGUN is not configured, we're not setting MAIL_URL"
 else
   echo "Setting up MAIL_URL in .profile.d if MAILGUN has been configured"
