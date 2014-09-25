@@ -14,6 +14,7 @@ unset GIT_DIR
 BUILD_DIR=$1
 CACHE_DIR=$2
 LP_DIR=`cd $(dirname $0); cd ..; pwd`
+BUILDPACK_DIR="$(dirname $(dirname $0))"
 
 [ ! -d $BUILD_DIR ] && mkdir $BUILD_DIR
 [ ! -d $CACHE_DIR ] && mkdir $CACHE_DIR
@@ -132,41 +133,20 @@ tar -zxf "$CACHE_DIR"/bundle.tar.gz --strip-components 1 -C "$METEOR_BUILD_DIR"/
 rm "$CACHE_DIR"/bundle.tar.gz
 ############################################
 
-############################################
-# Prepare ENV vars
-############################################
-echo "Setting up MONGO_URL in .profile.d"
-mkdir -p "$BUILD_DIR"/.profile.d
-cat > "$BUILD_DIR"/.profile.d/mongo.sh <<EOF
-  #!/bin/sh
-
-  export MONGO_URL=\${MONGO_URL:-\$MONGOHQ_URL};
-EOF
-
-if [ -z "${MAILGUN_API_KEY}" ]; then
-  echo "MAILGUN is not configured, we're not setting MAIL_URL"
-else
-  echo "Setting up MAIL_URL in .profile.d if MAILGUN has been configured"
-  mkdir -p "$BUILD_DIR"/.profile.d
-  cat > "$BUILD_DIR"/.profile.d/mailgun.sh <<EOF
-  #!/bin/sh
-
-  export MAIL_URL=smtp://\${MAILGUN_SMTP_LOGIN}:\${MAILGUN_SMTP_PASSWORD}@\${MAILGUN_SMTP_SERVER}:\${MAILGUN_SMTP_PORT};
-EOF
-fi
-
 # vendor node into the slug
 PATH="$METEOR_BUILD_DIR/bin:$PATH"
 echo "-----> Vendoring node into slug"
 mkdir -p "$METEOR_BUILD_DIR/bin"
 cp "$VENDORED_NODE/bin/node" "$METEOR_BUILD_DIR/bin/node"
 
-############################################
-# Run npm install beforein order to ensure fibers and others npm packages used by meteor are installed
-# as stated in meteor docs: http://docs.meteor.com/#deploying
-############################################
 echo "-----> Move to app directory: /programs/server"
 cd "$METEOR_BUILD_DIR"/app/programs/server
 
 echo "-----> Run npm install"
 npm install
+
+# copy over environment
+echo "-----> Copy over environment profile.d scripts"
+mkdir -p $BUILD_DIR/.profile.d
+cp "$BUILDPACK_DIR/mongo.sh" $BUILD_DIR/.profile.d/mongo.sh
+cp "$BUILDPACK_DIR/mailgun.sh" $BUILD_DIR/.profile.d/mailgun.sh
